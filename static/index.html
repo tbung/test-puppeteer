@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Test</title>
+  </head>
+  <body>
+    <table>
+    </table>
+  </body>
+  <script charset="utf-8">
+function getSensors(table) {
+  let httpRequest = new XMLHttpRequest();
+  httpRequest.onreadystatechange = () => generateTable(table, JSON.parse(httpRequest.response));
+  httpRequest.open('GET', 'http://localhost:8082/sensors');
+  httpRequest.send();
+}
+
+function generateTableHead(table, data) {
+  let thead = table.createTHead();
+  let row = thead.insertRow();
+  for (let key of data) {
+    let th = document.createElement("th");
+    let text = document.createTextNode(key);
+    th.appendChild(text);
+    row.appendChild(th);
+  }
+}
+
+function generateTable(table, data) {
+  let tbody = document.createElement('tbody');
+  for (let element of data) {
+    let row = tbody.insertRow();
+    for (key in element) {
+      let cell = row.insertCell();
+      let text = document.createTextNode(element[key]);
+      cell.appendChild(text);
+    }
+  }
+  if (table.tBodies.length > 0) {
+    let tmp = table.tBodies[0];
+    table.replaceChild(tbody, tmp);
+  } else {
+    table.appendChild(tbody);
+  }
+}
+
+let table = document.querySelector("table");
+getSensors(table);
+setInterval( () => getSensors(table), 5000);
+  </script>
+</html>

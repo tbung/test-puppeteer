@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Test</title>
+  </head>
+  <body>
+    <table>
+    </table>
+  </body>
+  <script charset="utf-8">
+let sensors = [
+  { name: "Window 1", active: true },
+  { name: "Window 2", active: true },
+  { name: "Motion Sensor 1", active: true },
+  { name: "Motion Sensor 2", active: true },
+];
+
+function generateTableHead(table, data) {
+  let thead = table.createTHead();
+  let row = thead.insertRow();
+  for (let key of data) {
+    let th = document.createElement("th");
+    let text = document.createTextNode(key);
+    th.appendChild(text);
+    row.appendChild(th);
+  }
+}
+
+function generateTable(table, data) {
+  for (let element of data) {
+    let row = table.insertRow();
+    for (key in element) {
+      let cell = row.insertCell();
+      let text = document.createTextNode(element[key]);
+      cell.appendChild(text);
+    }
+  }
+}
+
+function updateActive(table, data) {
+  for (let row of table.rows) {
+    if (row.firstChild.innerText === "name") { continue; }
+    row.children[1].innerText = data.filter(o => o.name === row.children[0].innerText)[0].active;
+  }
+}
+
+function randomizeActive(data) {
+  data.map(o => o.active = (Math.random() > 0.5));
+}
+
+function randomizedUpdate(table, data) {
+  randomizeActive(data);
+  updateActive(table, data);
+}
+
+let table = document.querySelector("table");
+let data = Object.keys(sensors[0]);
+generateTableHead(table, data);
+generateTable(table, sensors);
+setInterval( () => randomizedUpdate(table, sensors), 5000);
+  </script>
+</html>

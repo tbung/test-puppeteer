@@ -1,0 +1,21 @@
+services:
+    mock:
+        image: nginx:latest
+        volumes:
+            - ./mock:/usr/share/nginx/html
+        ports:
+            - "8080:80"
+
+    backend:
+        image: buildkite/puppeteer:latest
+        user: "node"
+        working_dir: /home/node/app
+        environment:
+            - NODE_ENV=production
+        volumes:
+            - ./:/home/node/app
+        expose:
+            - "8082"
+        ports:
+            - "8082:8082"
+        command: "npm start"
